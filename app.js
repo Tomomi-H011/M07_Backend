@@ -50,6 +50,11 @@ router.get("/songs", function(req, res) {
     res.json(songs); // Display the song data in the browser in json format when entering localhost:3000/songs
 });
 
+//Add redirect for Glitch
+app.get("/", (req, res) => {
+    res.redirect("/api/songs"); // Redirect the root URL to "/api/songs"
+});
+
 // All reqquests that usually use an api start with /api... so the url would be http://localhost:3000/api/songs
 app.use("/api", router); // This is the route that the router will use
 app.listen(3000); // This is the port that the server will listen to
