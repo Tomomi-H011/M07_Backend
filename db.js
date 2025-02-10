@@ -1,3 +1,5 @@
+//db.js
+// This file is used to connect to the database
 const mongoose = require('mongoose');
 const db = mongoose.connection;
 
