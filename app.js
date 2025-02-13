@@ -66,9 +66,12 @@ router.put("/songs/:id", async(req, res) => {
 });
 
 // Delete a song from the database using a DELETE request
-router.delete("/songs/:id", async(req, res) => {
+router.delete("/songs/:id", async(req, res) => {  //Get id from the url
     try{
-        await Song.deleteOne({_id: req.params.id}); // Filter by the id and delete the song
+        const song = await Song.findById(req.params.id); // This will grab the song by its id
+        console.log(song);
+        await Song.deleteOne({_id: song._id}); // Filter by the id and delete the song // Function in mongoose/mongo
+        // await Song.deleteOne({_id: req.params.id}); // Filter by the id and delete the song // Function in mongoose/mongo
         res.sendStatus(204); // This will send a status of 204 back to the client
     }
     catch(err){
