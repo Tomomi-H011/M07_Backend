@@ -5,15 +5,42 @@ var cors = require('cors'); // This is a package that allows the server to accep
 
 // Set up the app
 const bodyParser = require('body-parser'); // This is a package that allows the server to read the body of the request
-// Import the Song model
+const jwt = require('jwt-simple'); // This is a package that allows the server to create and verify JSON web tokens
+
+
 const Song = require("./models/song"); // Import the Song model from the songs.js file
+const User = require("./models/users"); // Import the User model from the users.js file
+
 const app = express(); // The variable app is the instance of express server
 
 app.use(cors()); //middleware that allows the server to accept requests from other servers
 app.use(bodyParser.json()); // This is middleware that allows the server to read the body of the request
 const router = express.Router(); // The variable router is the instance of express router which is used to create routes (sends back only the data requested)
 
+const secret = "supersecret"; // This is the secret key that will be used to create and verify JSON web tokens
 
+// Create a new user in the database
+router.post("/user", async(req, res) => {
+    if(!req.body.username || !req.body.password){ // If the username or password is missing
+        return res.sendStatus(400).json({error: "Missing username of password"}); // Send a status of 400
+    }
+
+    const newUser = await new User({
+        username: req.body.username,  //Grb values from the form
+        password: req.body.password,
+        status: req.body.status
+    })
+
+    try{
+        await newUser.save(); // Save the new user to the database
+        res.sendStatus(201); // Send a status of 201
+        console.log(newUser);
+        }
+    catch(err){
+        console.log(err);
+        res.sendStatus(400); // Send a status of 400});
+    }
+});
 
 // // Grab all the songs in the database
 router.get("/songs", async(req, res) => {
