@@ -106,6 +106,18 @@ router.delete("/songs/:id", async(req, res) => {  //Get id from the url
     }
 });
 
+// Add a new route to grab all users in the database
+router.get("/user", async(req, res) => {
+    try{
+        const users = await User.find({}); // This will grab all the users
+        res.send(users); // This will send the users back to the client
+        console.log(users);
+    }
+    catch(err){
+        console.log(err);
+    }
+});
+
 // Add redirect for Glitch
 app.get("/", (req, res) => {
     res.redirect("/api/songs"); // Redirect the root URL to "/api/songs"
