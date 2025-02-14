@@ -42,6 +42,49 @@ router.post("/user", async(req, res) => {
     }
 });
 
+// Authenticate a user/login
+// Post request to create a new session
+router.post("/auth", async(req, res) => {
+    if(!req.body.username || !req.body.password){ // If the username or password is missing
+        res.sendStatus(400).json({error: "Missing username of password"}); // Send a status of 400
+        return 
+    }
+    // Fid the user in the database, then see if it matches with a username and password
+    let user = await User.findOne({username: req.body.username}) // function(err, user){
+            //const user = await User.findOne({username: req.body.username});
+        
+        //connection or server error
+        //if(err){
+            // res.sendStatus(400).json({error: "Server error"});
+        // }
+    //If the user is not found
+    if(!user){
+        res.sendStatus(401).json({error: "Bad Username"});
+    }
+    //Check to see if the user's password matches the request password
+    else{
+        if(user.password != req.body.password){
+            res.sendStatus(401).json({error: "Bad Password"});
+        }
+        // Successful login
+        else{
+            //create a token that encoded with the jwt library, and send back the username
+            //Also, send back the status(authorized) in side the token
+            //Use boolean:Not authorized auth=0(false), Authorized auth =1(true)
+            username2 = user.username;
+            const token = jwt.encode({username: user.username}, secret);
+            const auth = 1
+
+            //respond with the token
+            res.json({
+                username2,
+                token: token,  //Bind the token to the user
+                auth: auth
+            })
+        }
+    }
+});
+
 // // Grab all the songs in the database
 router.get("/songs", async(req, res) => {
     try{
@@ -125,4 +168,6 @@ app.get("/", (req, res) => {
 
 // All reqquests that usually use an api start with /api... so the url would be http://localhost:3000/api/songs
 app.use("/api", router); // This is the route that the router will use
-app.listen(3000); // This is the port that the server will listen to
+
+var port = process.env.PORT || 3000; // This is the port that the server will listen to
+app.listen(port); // This is the port that the server will listen to
