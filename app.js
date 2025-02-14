@@ -85,6 +85,26 @@ router.post("/auth", async(req, res) => {
     }
 });
 
+// Check status of user with a valid token, see if it matches the frontend token
+router.get("/status", async(req, res) => {
+    if(!req.headers["x-auth"]){
+        return res.status(401).json({error: "Missing X-Auth"}); // missing token in the header
+    }
+
+    // if x-auth contains the token (it should)
+    const token = req.headers["x-auth"];
+    try{
+        const decoded = jwt.decode(token, secret); // decode the token with the secret
+
+        //send back all the username and status fields to the client
+        let users = User.find({}, "username status");
+        res.json(users); // send the users back to the client
+    }
+    catch(err){
+        res.status(401).json({error: "Invalid jwt token"}); // send a status of 401 and an error message
+    }
+});
+
 // // Grab all the songs in the database
 router.get("/songs", async(req, res) => {
     try{
