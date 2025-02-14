@@ -8,7 +8,8 @@ const Song = db.model("Song", {
     artist: String,
     popularity: {type:Number, min:1, max:10},
     releaseDate: {type: Date, default: Date.now}, // Default is the current date
-    genre: [String] // This is an array of strings
+    genre: [String], // This is an array of strings
+    username: String // This is the username of the user who created the song
 });
 
 module.exports = Song; // Export the Song model to be used in other files
